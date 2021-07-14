@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.victor.classes.Address;
 
-public class Employee {
+public abstract class Employee {
 	
 	private UUID uuid;
 	private String name;
