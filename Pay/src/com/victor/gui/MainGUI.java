@@ -11,6 +11,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.victor.actions.Undo;
+import com.victor.main.Main;
+
 public class MainGUI implements ActionListener {
 	
 	private JFrame frame;
@@ -23,6 +26,8 @@ public class MainGUI implements ActionListener {
 	private JButton createSellResultButton;
 	private JButton createServiceTaxButton;
 	private JButton changeInfoButton;
+	private JButton rollButton;
+	private JButton undoButton;
 	
 	public MainGUI() {
 		frame = new JFrame("Payroll");
@@ -36,6 +41,9 @@ public class MainGUI implements ActionListener {
 		
 		ListEmployeeButton = new JButton("List employees");
 		ListEmployeeButton.addActionListener(this);
+		
+		rollButton = new JButton("Roll");
+		rollButton.addActionListener(this);
 		
 		addEmployeeButton = new JButton("Add employee");
 		addEmployeeButton.addActionListener(this);
@@ -55,13 +63,18 @@ public class MainGUI implements ActionListener {
 		changeInfoButton = new JButton("Change employee info");
 		changeInfoButton.addActionListener(this);
 		
+		undoButton = new JButton("Undo last action");
+		undoButton.addActionListener(this);
+		
 		panel.add(ListEmployeeButton);
+		panel.add(rollButton);
 		panel.add(addEmployeeButton);
 		panel.add(removeEmployeeButton);
 		panel.add(createTimecardButton);
 		panel.add(createSellResultButton);
 		panel.add(createServiceTaxButton);
 		panel.add(changeInfoButton);
+		panel.add(undoButton);
 		
 		frame.add(panel, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -98,6 +111,14 @@ public class MainGUI implements ActionListener {
 		
 		if(e.getSource() == changeInfoButton) {
 			new ChangeInfoGUI();
+		}
+		
+		if(e.getSource() == rollButton) {
+			Main.roll();
+		}
+		
+		if(e.getSource() == undoButton) {
+			Undo.undo();
 		}
 	}
 

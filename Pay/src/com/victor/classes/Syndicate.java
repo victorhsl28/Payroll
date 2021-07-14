@@ -2,21 +2,22 @@ package com.victor.classes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Syndicate {
 	
-	private int syndicateId;
+	private UUID syndicateUUID;
 	private double syndicateTax;
 	private ArrayList<Double> extraTaxes;
 	
-	public Syndicate(int id, double syndicateTax) {
-		this.syndicateId = id;
+	public Syndicate(UUID syndicateUUID, double syndicateTax) {
+		this.syndicateUUID = syndicateUUID;
 		this.syndicateTax = syndicateTax;
 		this.extraTaxes = new ArrayList<>();
 	}
 	
 	public void print_info() {
-		System.out.println("ID: " + this.getSyndicateId() + "\n" +
+		System.out.println("ID: " + this.getSyndicateUUID().toString() + "\n" +
 							"Tax: " + this.getSyndicateTax() + "\n");
 		System.out.println("=Extras Taxes=");
 		for(Double extrataxes : extraTaxes) {
@@ -25,12 +26,12 @@ public class Syndicate {
 		System.out.println("==============");
 	}
 
-	public int getSyndicateId() {
-		return syndicateId;
+	public UUID getSyndicateUUID() {
+		return syndicateUUID;
 	}
 	
-	public void setSyndicateId(int syndicateId) {
-		this.syndicateId = syndicateId;
+	public void setSyndicateUUID(UUID syndicateUUID) {
+		this.syndicateUUID = syndicateUUID;
 	}
 	
 	public double getSyndicateTax() {

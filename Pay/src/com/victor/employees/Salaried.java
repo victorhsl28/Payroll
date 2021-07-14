@@ -1,22 +1,13 @@
 package com.victor.employees;
 
-import com.victor.classes.Adress;
+import java.util.UUID;
+
+import com.victor.classes.Address;
 
 public class Salaried extends Employee {
 
-	private double salary;
-
-	public Salaried(int id, String name, Adress adress, SalaryType salaryType, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, int syndicateId) {
-		super(id, name, adress, salaryType, salary, paymentMethod, onSyndicate, syndicateId);
-		this.salary = salary;
+	public Salaried(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, UUID syndicateUUID) {
+		super(uuid, name, adress, salary, paymentMethod, onSyndicate, syndicateUUID);
 	}
-
-	public double getSalary() {
-		return salary;
-	}
-
-	public void setSalary(double salary) {
-		this.salary = salary;
-	}
-
+	
 }

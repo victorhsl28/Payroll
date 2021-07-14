@@ -13,14 +13,15 @@ public class SellResult {
 	}
 	
 	public void print_info() {
-		int day = this.date.get(Calendar.DAY_OF_MONTH);
-		int month = this.date.get(Calendar.MONTH);
-		int year = this.date.get(Calendar.YEAR);
-		
-		System.out.println("======SellResult======\n" +
-							">Date: " + day + "/" + month + "/" + year + "\n" + 
-							">Value: " + this.value + 
-							"\n======================");
+		int minute = date.get(Calendar.MINUTE);
+		int hour = date.get(Calendar.HOUR_OF_DAY);
+		int day = date.get(Calendar.DAY_OF_MONTH);
+		int month = date.get(Calendar.MONTH) + 1;
+		int year = date.get(Calendar.YEAR);
+		String date = "Time: " + minute + ":" + hour + "\nDay: " + day + ":" + month + ":" + year + "\n";
+		System.out.println("Sell Result\n" +
+							"Date: " + date +
+							"Value: " + value);
 	}
 
 	public Calendar getDate() {

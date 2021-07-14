@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.UUID;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.victor.actions.Action;
+import com.victor.actions.Action.Event;
 import com.victor.main.Main;
 
 public class RemoveGUI implements ActionListener {
@@ -59,8 +62,16 @@ public class RemoveGUI implements ActionListener {
 		}
 		
 		try {
-			int id = Integer.valueOf(idField.getText());
+			UUID id = UUID.fromString(idField.getText());
 			if(Main.employees.containsKey(id)) {
+				if(Main.employees.get(id).isOnSyndicate()) {
+					Main.syndicate.remove(Main.employees.get(id).getSyndicateUUID());
+				}
+				if(Main.employees.get(id).isOnSyndicate()) {
+					Main.lastAction = new Action(Main.employees.get(id), null, Main.syndicate.get(Main.employees.get(id).getSyndicateUUID()), Event.REMOVE_EMPLOYEE);
+				} else {
+					Main.lastAction = new Action(Main.employees.get(id), null, null, Event.REMOVE_EMPLOYEE);
+				}
 				Main.employees.remove(id);
 				JOptionPane.showMessageDialog(null, "Employee " + id + " has been removed!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 				WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);

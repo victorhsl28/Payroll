@@ -1,42 +1,27 @@
 package com.victor.employees;
 
-import com.victor.classes.Adress;
+import java.util.UUID;
+
+import com.victor.classes.Address;
 
 public class Employee {
 	
-	private int id;
+	private UUID uuid;
 	private String name;
-	private Adress adress;
-	private SalaryType salaryType;
+	private Address adress;
+	private double salary;
 	private PaymentMethod paymentMethod;
 	private boolean onSyndicate;
-	private int syndicateId;
+	private UUID syndicateUUID;
 	
-	public Employee(int id, String name, Adress adress, SalaryType salaryType, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, int syndicateId) {
-		this.id = id;
+	public Employee(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, UUID syndicateUUID) {
+		this.uuid = uuid;
 		this.name = name;
 		this.adress = adress;
-		this.salaryType = salaryType;
+		this.salary = salary;
 		this.paymentMethod = paymentMethod;
 		this.onSyndicate = onSyndicate;
-		this.syndicateId = syndicateId;
-	}
-	
-	public void print_info() {
-		System.out.println("==========Employee Info==========\n" + 
-							"Name: " + this.name + "\n" + 
-							"Adress: \n" + 
-							">City: " + this.adress.getCity() + "\n" +
-							">State: " + this.adress.getState() + "\n" +
-							">Country: " + this.adress.getCountry() + "\n" +
-							"Salary Type: " + this.salaryType.toString() + "\n" +
-							"Payment Method: " + this.paymentMethod.toString() + "\n" +
-							"Is on syndicate: " + this.onSyndicate + "\n");	
-		System.out.println("\n=================================");
-	}
-	
-	public static enum SalaryType {
-	    HOURLY, SALARIED, COMISSIONED;
+		this.syndicateUUID = syndicateUUID;
 	}
 	
 	public static enum PaymentMethod {
@@ -51,20 +36,12 @@ public class Employee {
 		this.name = nome;
 	}
 
-	public Adress getAdress() {
+	public Address getAdress() {
 		return adress;
 	}
 
-	public void setAdress(Adress adress) {
+	public void setAdress(Address adress) {
 		this.adress = adress;
-	}
-
-	public SalaryType getSalaryType() {
-		return salaryType;
-	}
-
-	public void setSalaryType(SalaryType salaryType) {
-		this.salaryType = salaryType;
 	}
 
 	public PaymentMethod getPaymentMethod() {
@@ -83,19 +60,27 @@ public class Employee {
 		this.onSyndicate = onSyndicate;
 	}
 
-	public int getId() {
-		return id;
+	public UUID getUUID() {
+		return uuid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setUUID(UUID uuid) {
+		this.uuid = uuid;
 	}
 
-	public int getSyndicateId() {
-		return syndicateId;
+	public UUID getSyndicateUUID() {
+		return syndicateUUID;
 	}
 
-	public void setSyndicateId(int syndicateId) {
-		this.syndicateId = syndicateId;
+	public void setSyndicateUUID(UUID syndicateUUID) {
+		this.syndicateUUID = syndicateUUID;
+	}
+
+	public double getSalary() {
+		return salary;
+	}
+
+	public void setSalary(double salary) {
+		this.salary = salary;
 	}
 }

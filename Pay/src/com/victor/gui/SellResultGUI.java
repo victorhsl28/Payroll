@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.UUID;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,8 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.victor.actions.Action;
+import com.victor.actions.Action.Event;
 import com.victor.classes.SellResult;
-import com.victor.employees.ComissionedSalaried;
+import com.victor.employees.Comissioned;
 import com.victor.main.Main;
 
 public class SellResultGUI implements ActionListener {
@@ -72,12 +75,13 @@ public class SellResultGUI implements ActionListener {
 		}
 		
 		try {
-			int id = Integer.valueOf(idField.getText());
+			UUID id = UUID.fromString(idField.getText());
 			int value = Integer.valueOf(valueField.getText());
 			if(Main.employees.containsKey(id)) {
-				if(Main.employees.get(id) instanceof ComissionedSalaried) {
-					ComissionedSalaried employee = (ComissionedSalaried) Main.employees.get(id);
+				if(Main.employees.get(id) instanceof Comissioned) {
+					Comissioned employee = (Comissioned) Main.employees.get(id);
 					employee.getSellResults().add(new SellResult(value));
+					Main.lastAction = new Action(employee, null, null, Event.CREATE_SELL_RESULT);
 					JOptionPane.showMessageDialog(null, "Sell result for employee " + id + " has been created!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 					WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
 					Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);

@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.UUID;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -18,13 +19,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import com.victor.classes.Adress;
+import com.victor.actions.Action;
+import com.victor.actions.Action.Event;
+import com.victor.classes.Address;
 import com.victor.classes.Syndicate;
-import com.victor.employees.ComissionedSalaried;
+import com.victor.employees.Comissioned;
+import com.victor.employees.Employee.PaymentMethod;
 import com.victor.employees.Hourly;
 import com.victor.employees.Salaried;
-import com.victor.employees.Employee.PaymentMethod;
-import com.victor.employees.Employee.SalaryType;
 import com.victor.main.Main;
 
 public class AddGUI implements ActionListener {
@@ -39,7 +41,8 @@ public class AddGUI implements ActionListener {
 	private JRadioButton salaryTypeButtonHourly;
 	private JRadioButton salaryTypeButtonSalaried;
 	private JRadioButton salaryTypeButtonComissioned;
-	private JFormattedTextField salary_taxField;
+	private JFormattedTextField salaryField;
+	private JFormattedTextField comissionField;
 	private ButtonGroup paymentMethodGroup;
 	private JRadioButton paymentMethodButtonMail;
 	private JRadioButton paymentMethodButtonHand;
@@ -97,10 +100,15 @@ public class AddGUI implements ActionListener {
 		panel.add(salaryTypeButtonSalaried);
 		panel.add(salaryTypeButtonComissioned);
 		
-		JLabel salary_tax = new JLabel("Salary/Tax:");
-		salary_taxField = new JFormattedTextField();
-		panel.add(salary_tax);
-		panel.add(salary_taxField);
+		JLabel salaryLabel = new JLabel("Salary");
+		salaryField = new JFormattedTextField();
+		panel.add(salaryLabel);
+		panel.add(salaryField);
+		
+		JLabel taxLabel = new JLabel("Tax (if comisisoned)");
+		comissionField = new JFormattedTextField();
+		panel.add(taxLabel);
+		panel.add(comissionField);
 		
 		JLabel paymentMethodLabel = new JLabel("Payment method:");
 		panel.add(paymentMethodLabel);
@@ -168,7 +176,7 @@ public class AddGUI implements ActionListener {
 			return;
 		}
 		
-		if(salary_taxField.getText().isBlank()) {
+		if(salaryField.getText().isBlank()) {
 			result.setText("The salary field cannot de blank!");
 			return;
 		}
@@ -183,10 +191,15 @@ public class AddGUI implements ActionListener {
 			return;
 		}
 		
-		int id = Main.employees.size();
-		if(Main.employees.containsKey(id)) {
-			while(Main.employees.containsKey(id))
-				id++;
+		if(paymentMethodGroup.getSelection() == salaryTypeButtonComissioned && comissionField.getText().isEmpty()) {
+			result.setText("The tax field cannot de blank!");
+			return;
+		}
+		
+		UUID uuid = UUID.randomUUID();
+		if(Main.employees.containsKey(uuid) || uuid.toString().equalsIgnoreCase(new UUID(0, 0).toString())) {
+			while(Main.employees.containsKey(uuid))
+				uuid = UUID.randomUUID();
 		}
 		
 		PaymentMethod paymentMethod = null;
@@ -199,36 +212,38 @@ public class AddGUI implements ActionListener {
 		}
 		
 		boolean onSyndicate = false;
-		int syndicateId = -1;
+		UUID syndicateUUID = new UUID(0, 0);
 		if(syndicateYesButton.isSelected()) {
 			onSyndicate = true;
-			syndicateId = Main.syndicate.size();
-			if(Main.syndicate.containsKey(syndicateId)) {
-				while(Main.syndicate.containsKey(syndicateId))
-					syndicateId++;
+			syndicateUUID = UUID.randomUUID();
+			if(Main.syndicate.containsKey(syndicateUUID) || syndicateUUID.toString().equalsIgnoreCase(new UUID(0, 0).toString())) {
+				while(Main.syndicate.containsKey(syndicateUUID))
+					syndicateUUID = UUID.randomUUID();
 			}
 		} else if(syndicateNoButton.isSelected()) {
 			onSyndicate = false;
+			syndicateUUID = new UUID(0, 0);
 		}
 		
 		try {
 			if(salaryTypeButtonHourly.isSelected()) {
-				Main.employees.put(id, new Hourly(id, nameField.getText(), new Adress(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), SalaryType.HOURLY, Double.valueOf(salary_taxField.getText()), paymentMethod, onSyndicate, syndicateId));
+				Main.employees.put(uuid, new Hourly(uuid, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, onSyndicate, syndicateUUID));
 			} else if(salaryTypeButtonSalaried.isSelected()) {
-				Main.employees.put(id, new Salaried(id, nameField.getText(), new Adress(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), SalaryType.SALARIED, Double.valueOf(salary_taxField.getText()), paymentMethod, onSyndicate, syndicateId));
+				Main.employees.put(uuid, new Salaried(uuid, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, onSyndicate, syndicateUUID));
 			} else if(salaryTypeButtonComissioned.isSelected()) {
-				Main.employees.put(id, new ComissionedSalaried(id, nameField.getText(), new Adress(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), SalaryType.COMISSIONED, Double.valueOf(salary_taxField.getText()), paymentMethod, onSyndicate, syndicateId));
+				Main.employees.put(uuid, new Comissioned(uuid, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, onSyndicate, syndicateUUID, Double.valueOf(comissionField.getText())));
 			} else {
 				result.setText("Error while creating new employee!");
 			}
 			if(onSyndicate) {
-				Main.syndicate.put(syndicateId, new Syndicate(syndicateId, Double.valueOf(salary_taxField.getText()) * 0.1));
+				Main.syndicate.put(syndicateUUID, new Syndicate(syndicateUUID, Double.valueOf(salaryField.getText()) * 0.1));
 			}
-			JOptionPane.showMessageDialog(null, "Employee " + nameField.getText() + " has been created with the ID: " + id + "!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+			Main.lastAction = new Action(Main.employees.get(uuid), null, null, Event.ADD_EMPLOYEE);
+			JOptionPane.showMessageDialog(null, "Employee " + nameField.getText() + " has been created with the ID: " + uuid.toString() + "!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 			WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
 			Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
 		} catch (Exception e) {
-			result.setText("This salary is not valid!");
+			result.setText("There is an incorrect field!");
 		}
 	}
 

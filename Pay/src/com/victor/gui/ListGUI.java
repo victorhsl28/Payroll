@@ -4,9 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import com.victor.employees.ComissionedSalaried;
+import com.victor.employees.Comissioned;
 import com.victor.employees.Employee;
-import com.victor.employees.Employee.SalaryType;
 import com.victor.employees.Hourly;
 import com.victor.employees.Salaried;
 import com.victor.main.Main;
@@ -25,25 +24,25 @@ public class ListGUI {
 		String[][] data = new String[Main.employees.size()][10];
 		int i = 0;
 		for(Employee employee : Main.employees.values()) {
-			data[i][0] = String.valueOf(employee.getId());
+			data[i][0] = employee.getUUID().toString();
 			data[i][1] = employee.getName();
 			data[i][2] = employee.getAdress().getCity();
 			data[i][3] = employee.getAdress().getState();
 			data[i][4] = employee.getAdress().getCountry();
-			data[i][5] = String.valueOf(employee.getSalaryType().toString());
-			if(employee.getSalaryType() == SalaryType.HOURLY) {
-				data[i][6] = String.valueOf(((Hourly)employee).getSalary());
-			} else if(employee.getSalaryType() == SalaryType.SALARIED) {
-				data[i][6] = String.valueOf(((Salaried)employee).getSalary());
-			} else if(employee.getSalaryType() == SalaryType.COMISSIONED) {
-				data[i][6] = String.valueOf(((ComissionedSalaried)employee).getSalary());
+			if(employee instanceof Hourly) {
+				data[i][5] = "Hourly";
+			} else if(employee instanceof Salaried) {
+				data[i][5] = "Salaried";
+			} else if(employee instanceof Comissioned) {
+				data[i][5] = "Comissioned";
 			}
-			data[i][7] = String.valueOf(employee.getPaymentMethod().toString());
+			data[i][6] = String.valueOf(employee.getSalary());
+			data[i][7] = employee.getPaymentMethod().toString();
 			data[i][8] = String.valueOf(employee.isOnSyndicate());
-			data[i][9] = String.valueOf(employee.getSyndicateId());
+			data[i][9] = employee.getSyndicateUUID().toString();
 			i++;
 		}
-		String[] columnNames = { "ID", "Name", "City", "State", "Country", "Salary Type", "Salary/Tax", "Payment Method", "On Syndicate", "Syndicate ID" };
+		String[] columnNames = { "ID", "Name", "City", "State", "Country", "Employee Type", "Salary/Tax", "Payment Method", "On Syndicate", "Syndicate ID" };
 		table = new JTable(data, columnNames);
 		table.setBounds(50, 50, 200, 300);
 		scroll = new JScrollPane(table);

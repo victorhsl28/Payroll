@@ -2,28 +2,24 @@ package com.victor.employees;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import com.victor.classes.Adress;
+import com.victor.classes.Address;
 import com.victor.classes.TimeCard;
 
 public class Hourly extends Employee {
 	
-	private double salary;
 	private ArrayList<TimeCard> timecards;
-	public final double extraHourTax = 1.5D;
 	
-	public Hourly(int id, String name, Adress adress, SalaryType salaryType, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, int syndicateId) {
-		super(id, name, adress, salaryType, salary, paymentMethod, onSyndicate, syndicateId);
-		this.salary = salary;
+	public Hourly(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, UUID syndicateUUID) {
+		super(uuid, name, adress, salary, paymentMethod, onSyndicate, syndicateUUID);
 		this.timecards = new ArrayList<>();
 	}
 	
-	public double getSalary() {
-		return salary;
-	}
-
-	public void setSalary(double hourlySalary) {
-		this.salary = hourlySalary;
+	public void printTimeCards() {
+		for(TimeCard timeCard : timecards) {
+			timeCard.print_info();
+		}
 	}
 
 	public List<TimeCard> getTimecards() {
@@ -33,9 +29,4 @@ public class Hourly extends Employee {
 	public void setTimecards(ArrayList<TimeCard> timecards) {
 		this.timecards = timecards;
 	}
-
-	public double getExtraHourTax() {
-		return extraHourTax;
-	}
-
 }

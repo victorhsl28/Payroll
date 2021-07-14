@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.UUID;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.victor.actions.Action;
+import com.victor.actions.Action.Event;
 import com.victor.main.Main;
 
 public class SyndicateGUI implements ActionListener {
@@ -70,11 +73,12 @@ public class SyndicateGUI implements ActionListener {
 		}
 		
 		try {
-			int id = Integer.valueOf(idField.getText());
+			UUID id = UUID.fromString(idField.getText());
 			double tax = Double.valueOf(taxField.getText());
 			
 			if(Main.syndicate.containsKey(id)) {
 				Main.syndicate.get(id).getExtraTaxes().add(tax);
+				Main.lastAction = new Action(null, null, Main.syndicate.get(id), Event.CREATE_SERVICE_TAX);
 				JOptionPane.showMessageDialog(null, "Service tax for syndicate employee " + id + " has been created!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 				WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
 				Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
