@@ -336,12 +336,12 @@ public class ChangeInfoGUI implements ActionListener {
 						result.setText("The syndicate ID is already in use!");
 						return;
 					}
-					if(Main.syndicate.containsKey(oldSyndicateID)) {
+					if(Main.syndicate.containsKey(oldSyndicateID) && (!oldSyndicateID.toString().equalsIgnoreCase(Main.nullUUID))) {
 						Main.syndicate.remove(oldSyndicateID);
 						syndicateId = newSyndicateID;
 					} else {					
 						syndicateId = UUID.randomUUID();
-						if(Main.syndicate.containsKey(syndicateId)) {
+						if(Main.syndicate.containsKey(syndicateId) || syndicateId.toString().equalsIgnoreCase(Main.nullUUID)) {
 							while(Main.syndicate.containsKey(syndicateId))
 								syndicateId = UUID.randomUUID();
 						}
