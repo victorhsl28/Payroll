@@ -10,14 +10,12 @@ import com.victor.classes.SellResult;
 public class Comissioned extends Employee {
 	
 	private double comissionedTax;
-	private ArrayList<SellResult> sellResults;
-	private int fridayCounter;
+	private List<SellResult> sellResults;
 
-	public Comissioned(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, UUID syndicateUUID, Double comissionedTax) {
-		super(uuid, name, adress, salary, paymentMethod, onSyndicate, syndicateUUID);
+	public Comissioned(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, String paymentSchedule, UUID syndicateUUID, Double comissionedTax) {
+		super(uuid, name, adress, salary, paymentMethod, paymentSchedule, syndicateUUID);
 		this.comissionedTax = comissionedTax;
-		this.sellResults = new ArrayList<>();
-		this.fridayCounter = 0;
+		this.sellResults = new ArrayList<SellResult>();
 	}
 	
 	public void printSellResults() {
@@ -38,15 +36,7 @@ public class Comissioned extends Employee {
 		return sellResults;
 	}
 
-	public void setSellResults(ArrayList<SellResult> sellResults) {
+	public void setSellResults(List<SellResult> sellResults) {
 		this.sellResults = sellResults;
-	}
-
-	public int getFridayCounter() {
-		return fridayCounter;
-	}
-
-	public void setFridayCounter(int fridayCounter) {
-		this.fridayCounter = fridayCounter;
 	}
 }

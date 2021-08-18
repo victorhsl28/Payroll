@@ -78,7 +78,7 @@ public class SyndicateGUI implements ActionListener {
 			
 			if(Main.syndicate.containsKey(id)) {
 				Main.syndicate.get(id).getExtraTaxes().add(tax);
-				Main.lastAction = new Action(null, null, Main.syndicate.get(id), Event.CREATE_SERVICE_TAX);
+				Main.lastAction = new Action(null, null, Main.syndicate.get(id), null, Event.CREATE_SERVICE_TAX);
 				JOptionPane.showMessageDialog(null, "Service tax for syndicate employee " + id + " has been created!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 				WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
 				Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);

@@ -11,17 +11,21 @@ public abstract class Employee {
 	private Address adress;
 	private double salary;
 	private PaymentMethod paymentMethod;
-	private boolean onSyndicate;
+	private String paymentSchedule;
+	private int weeksCounter;
 	private UUID syndicateUUID;
+	private boolean payed;
 	
-	public Employee(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, UUID syndicateUUID) {
+	public Employee(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, String paymentSchedule, UUID syndicateUUID) {
 		this.uuid = uuid;
 		this.name = name;
 		this.adress = adress;
 		this.salary = salary;
 		this.paymentMethod = paymentMethod;
-		this.onSyndicate = onSyndicate;
+		this.paymentSchedule = paymentSchedule;
+		this.weeksCounter = 1;
 		this.syndicateUUID = syndicateUUID;
+		this.payed = false;
 	}
 	
 	public static enum PaymentMethod {
@@ -52,14 +56,6 @@ public abstract class Employee {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public boolean isOnSyndicate() {
-		return onSyndicate;
-	}
-
-	public void setOnSyndicate(boolean onSyndicate) {		
-		this.onSyndicate = onSyndicate;
-	}
-
 	public UUID getUUID() {
 		return uuid;
 	}
@@ -82,5 +78,29 @@ public abstract class Employee {
 
 	public void setSalary(double salary) {
 		this.salary = salary;
+	}
+
+	public String getPaymentSchedule() {
+		return paymentSchedule;
+	}
+
+	public void setPaymentSchedule(String paymentSchedule) {
+		this.paymentSchedule = paymentSchedule;
+	}
+
+	public int getWeeksCounter() {
+		return weeksCounter;
+	}
+
+	public void setWeeksCounter(int weeksCounter) {
+		this.weeksCounter = weeksCounter;
+	}
+
+	public boolean isPayed() {
+		return payed;
+	}
+
+	public void setPayed(boolean payed) {
+		this.payed = payed;
 	}
 }

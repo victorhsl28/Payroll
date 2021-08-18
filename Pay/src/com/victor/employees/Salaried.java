@@ -6,8 +6,8 @@ import com.victor.classes.Address;
 
 public class Salaried extends Employee {
 
-	public Salaried(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, UUID syndicateUUID) {
-		super(uuid, name, adress, salary, paymentMethod, onSyndicate, syndicateUUID);
+	public Salaried(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, String paymentSchedule, UUID syndicateUUID) {
+		super(uuid, name, adress, salary, paymentMethod, paymentSchedule, syndicateUUID);
 	}
 	
 }

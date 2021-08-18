@@ -93,14 +93,14 @@ public class TimecardGUI implements ActionListener {
 						if(employee.getTimecards().isEmpty()) {
 							employee.getTimecards().add(new TimeCard());
 							JOptionPane.showMessageDialog(null, "Timecard for employee " + id + " has been created!", "Success!", JOptionPane.INFORMATION_MESSAGE);
-							Main.lastAction = new Action(employee, null, null, Event.CREATE_TIMECARD);
+							Main.lastAction = new Action(employee, null, null, null, Event.CREATE_TIMECARD);
 							WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
 							Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
 						} else if(!employee.getTimecards().get(employee.getTimecards().size() - 1).isCompleted()) {
 							result.setText("The last employee timecard is not completed!");
 						} else {
 							employee.getTimecards().add(new TimeCard());
-							Main.lastAction = new Action(employee, null, null, Event.CREATE_TIMECARD);
+							Main.lastAction = new Action(employee, null, null, null, Event.CREATE_TIMECARD);
 							JOptionPane.showMessageDialog(null, "Timecard for employee " + id + " has been created!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 							WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
 							Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
@@ -112,7 +112,7 @@ public class TimecardGUI implements ActionListener {
 							result.setText("There are no open timecards!");
 						} else if(!employee.getTimecards().get(employee.getTimecards().size() - 1).isCompleted()) {
 							employee.getTimecards().get(employee.getTimecards().size() - 1).closeTimecard();
-							Main.lastAction = new Action(employee, null, null, Event.CREATE_TIMECARD);
+							Main.lastAction = new Action(employee, null, null, null, Event.CREATE_TIMECARD);
 							JOptionPane.showMessageDialog(null, "Timecard for employee " + id + " has been updated!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 							WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
 							Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);

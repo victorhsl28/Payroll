@@ -9,11 +9,11 @@ import com.victor.classes.TimeCard;
 
 public class Hourly extends Employee {
 	
-	private ArrayList<TimeCard> timecards;
+	private List<TimeCard> timecards;
 	
-	public Hourly(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, boolean onSyndicate, UUID syndicateUUID) {
-		super(uuid, name, adress, salary, paymentMethod, onSyndicate, syndicateUUID);
-		this.timecards = new ArrayList<>();
+	public Hourly(UUID uuid, String name, Address adress, Double salary, PaymentMethod paymentMethod, String paymentSchedule, UUID syndicateUUID) {
+		super(uuid, name, adress, salary, paymentMethod, paymentSchedule, syndicateUUID);
+		this.timecards = new ArrayList<TimeCard>();
 	}
 	
 	public void printTimeCards() {
@@ -26,7 +26,7 @@ public class Hourly extends Employee {
 		return timecards;
 	}
 
-	public void setTimecards(ArrayList<TimeCard> timecards) {
+	public void setTimecards(List<TimeCard> timecards) {
 		this.timecards = timecards;
 	}
 }

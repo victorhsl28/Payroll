@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.victor.actions.Redo;
 import com.victor.actions.Undo;
 import com.victor.main.Main;
 
@@ -28,6 +29,8 @@ public class MainGUI implements ActionListener {
 	private JButton changeInfoButton;
 	private JButton rollButton;
 	private JButton undoButton;
+	private JButton redoButton;
+	private JButton createPaymentScheduleButton;
 	
 	public MainGUI() {
 		frame = new JFrame("Payroll");
@@ -41,9 +44,6 @@ public class MainGUI implements ActionListener {
 		
 		ListEmployeeButton = new JButton("List employees");
 		ListEmployeeButton.addActionListener(this);
-		
-		rollButton = new JButton("Roll");
-		rollButton.addActionListener(this);
 		
 		addEmployeeButton = new JButton("Add employee");
 		addEmployeeButton.addActionListener(this);
@@ -63,8 +63,17 @@ public class MainGUI implements ActionListener {
 		changeInfoButton = new JButton("Change employee info");
 		changeInfoButton.addActionListener(this);
 		
+		rollButton = new JButton("Roll");
+		rollButton.addActionListener(this);
+		
 		undoButton = new JButton("Undo last action");
 		undoButton.addActionListener(this);
+		
+		redoButton = new JButton("Redo last action");
+		redoButton.addActionListener(this);
+		
+		createPaymentScheduleButton = new JButton("Create payment schedule");
+		createPaymentScheduleButton.addActionListener(this);
 		
 		panel.add(ListEmployeeButton);
 		panel.add(rollButton);
@@ -75,6 +84,8 @@ public class MainGUI implements ActionListener {
 		panel.add(createServiceTaxButton);
 		panel.add(changeInfoButton);
 		panel.add(undoButton);
+		panel.add(redoButton);
+		panel.add(createPaymentScheduleButton);
 		
 		frame.add(panel, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -119,6 +130,14 @@ public class MainGUI implements ActionListener {
 		
 		if(e.getSource() == undoButton) {
 			Undo.undo();
+		}
+		
+		if(e.getSource() == redoButton) {
+			Redo.redo();
+		}
+		
+		if(e.getSource() == createPaymentScheduleButton) {
+			new PaymentScheduleGUI();
 		}
 	}
 

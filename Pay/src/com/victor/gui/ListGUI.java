@@ -38,11 +38,11 @@ public class ListGUI {
 			}
 			data[i][6] = String.valueOf(employee.getSalary());
 			data[i][7] = employee.getPaymentMethod().toString();
-			data[i][8] = String.valueOf(employee.isOnSyndicate());
-			data[i][9] = employee.getSyndicateUUID().toString();
+			data[i][8] = employee.getSyndicateUUID().toString();
+			data[i][9] = employee.getPaymentSchedule();
 			i++;
 		}
-		String[] columnNames = { "ID", "Name", "City", "State", "Country", "Employee Type", "Salary/Tax", "Payment Method", "On Syndicate", "Syndicate ID" };
+		String[] columnNames = { "ID", "Name", "City", "State", "Country", "Employee Type", "Salary/Tax", "Payment Method", "Syndicate ID", "Payment Schedule" };
 		table = new JTable(data, columnNames);
 		table.setBounds(50, 50, 200, 300);
 		scroll = new JScrollPane(table);

@@ -211,34 +211,29 @@ public class AddGUI implements ActionListener {
 			paymentMethod = PaymentMethod.HAND_CHECK;
 		}
 		
-		boolean onSyndicate = false;
 		UUID syndicateUUID = new UUID(0, 0);
 		if(syndicateYesButton.isSelected()) {
-			onSyndicate = true;
 			syndicateUUID = UUID.randomUUID();
-			if(Main.syndicate.containsKey(syndicateUUID) || syndicateUUID.toString().equalsIgnoreCase(new UUID(0, 0).toString())) {
+			if(Main.syndicate.containsKey(syndicateUUID) || syndicateUUID.toString().equalsIgnoreCase(Main.nullUUID)) {
 				while(Main.syndicate.containsKey(syndicateUUID))
 					syndicateUUID = UUID.randomUUID();
 			}
-		} else if(syndicateNoButton.isSelected()) {
-			onSyndicate = false;
-			syndicateUUID = new UUID(0, 0);
 		}
 		
 		try {
 			if(salaryTypeButtonHourly.isSelected()) {
-				Main.employees.put(uuid, new Hourly(uuid, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, onSyndicate, syndicateUUID));
+				Main.employees.put(uuid, new Hourly(uuid, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, "semanal 1 sexta", syndicateUUID));
 			} else if(salaryTypeButtonSalaried.isSelected()) {
-				Main.employees.put(uuid, new Salaried(uuid, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, onSyndicate, syndicateUUID));
+				Main.employees.put(uuid, new Salaried(uuid, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, "mensal $", syndicateUUID));
 			} else if(salaryTypeButtonComissioned.isSelected()) {
-				Main.employees.put(uuid, new Comissioned(uuid, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, onSyndicate, syndicateUUID, Double.valueOf(comissionField.getText())));
+				Main.employees.put(uuid, new Comissioned(uuid, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, "semanal 2 sexta", syndicateUUID, Double.valueOf(comissionField.getText())));
 			} else {
 				result.setText("Error while creating new employee!");
 			}
-			if(onSyndicate) {
+			if(!uuid.toString().equalsIgnoreCase(Main.nullUUID)) {
 				Main.syndicate.put(syndicateUUID, new Syndicate(syndicateUUID, Double.valueOf(salaryField.getText()) * 0.1));
 			}
-			Main.lastAction = new Action(Main.employees.get(uuid), null, null, Event.ADD_EMPLOYEE);
+			Main.lastAction = new Action(Main.employees.get(uuid), null, null, null, Event.ADD_EMPLOYEE);
 			JOptionPane.showMessageDialog(null, "Employee " + nameField.getText() + " has been created with the ID: " + uuid.toString() + "!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 			WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
 			Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);

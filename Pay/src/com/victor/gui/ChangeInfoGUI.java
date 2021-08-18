@@ -55,6 +55,7 @@ public class ChangeInfoGUI implements ActionListener {
 	private JRadioButton syndicateNoButton;
 	private JFormattedTextField syndicateIdField;
 	private JFormattedTextField syndicateTaxField;
+	private JFormattedTextField paymentScheduleField;
 	private JButton concludeButton;
 	private JLabel result;
 	private JButton searchButton;
@@ -168,6 +169,11 @@ public class ChangeInfoGUI implements ActionListener {
 		panel.add(syndicateTax);
 		panel.add(syndicateTaxField);
 		
+		JLabel paymentScheduleLabel = new JLabel("Payment schedule");
+		paymentScheduleField = new JFormattedTextField();
+		panel.add(paymentScheduleLabel);
+		panel.add(paymentScheduleField);
+		
 		
 		concludeButton = new JButton("Save changes");
 		concludeButton.addActionListener(this);
@@ -215,7 +221,7 @@ public class ChangeInfoGUI implements ActionListener {
 					paymentMethodButtonDeposit.setSelected(true);
 				}
 				
-				if(employee.isOnSyndicate()) {
+				if(!employee.getSyndicateUUID().toString().equalsIgnoreCase(Main.nullUUID)) {
 					syndicateYesButton.setSelected(true);
 					if(Main.syndicate.containsKey(employee.getSyndicateUUID())) {
 						syndicateIdField.setText(String.valueOf(employee.getSyndicateUUID()));
@@ -224,8 +230,10 @@ public class ChangeInfoGUI implements ActionListener {
 				} else {
 					syndicateNoButton.setSelected(true);
 					syndicateIdField.setText(new UUID(0, 0).toString());
-					syndicateTaxField.setText("-1");
+					syndicateTaxField.setText("0");
 				}
+				
+				paymentScheduleField.setText(employee.getPaymentSchedule());
 				
 			} else {
 				result.setText("ID not founded!");
@@ -296,6 +304,11 @@ public class ChangeInfoGUI implements ActionListener {
 			return;
 		}
 		
+		if(paymentScheduleField.getText().isBlank()) {
+			result.setText("The payment schedule field cannot de blank!");
+			return;
+		}
+		
 		try {
 			UUID oldID = UUID.fromString(idField.getText());
 			UUID newID = UUID.fromString(newIdField.getText());
@@ -314,19 +327,15 @@ public class ChangeInfoGUI implements ActionListener {
 				Employee oldEmployee = Main.employees.get(oldID);
 				Syndicate oldSyndicate = Main.syndicate.get(oldEmployee.getSyndicateUUID());
 				
-				boolean onSyndicate = false;
 				UUID oldSyndicateID = Main.employees.get(oldID).getSyndicateUUID();
 				UUID newSyndicateID = UUID.fromString(syndicateIdField.getText());
 				UUID syndicateId = new UUID(0, 0);
 				
 				if(syndicateYesButton.isSelected()) {
-					
 					if(!(newSyndicateID.toString().equalsIgnoreCase(oldSyndicateID.toString())) && Main.syndicate.containsKey(newSyndicateID)) {
 						result.setText("The syndicate ID is already in use!");
 						return;
 					}
-					
-					onSyndicate = true;
 					if(Main.syndicate.containsKey(oldSyndicateID)) {
 						Main.syndicate.remove(oldSyndicateID);
 						syndicateId = newSyndicateID;
@@ -338,27 +347,33 @@ public class ChangeInfoGUI implements ActionListener {
 						}
 					}
 				} else if(syndicateNoButton.isSelected()) {
-					onSyndicate = false;
 					syndicateId = new UUID(0, 0);
-					
 					if(Main.syndicate.containsKey(oldSyndicateID)) {
 						Main.syndicate.remove(oldSyndicateID);
 					}
 				}
 				
-				if(newID.toString().equalsIgnoreCase(new UUID(0, 0).toString())) {
+				if(newID.toString().equalsIgnoreCase(Main.nullUUID)) {
 					result.setText("This ID is already in use!");
 					return;
 				}
 				
 				if(Main.employees.containsKey(newID)) {	
 					if(newID.toString().equalsIgnoreCase(oldID.toString())) {
-						changeInfo(newID, oldID, newSyndicateID, oldEmployee, oldSyndicate, paymentMethod, onSyndicate, syndicateId);
+						if(Main.paymentSchedules.contains(paymentScheduleField.getText())) {
+							changeInfo(newID, oldID, oldEmployee, oldSyndicate, paymentMethod, paymentScheduleField.getText(), syndicateId);
+						} else {
+							result.setText("Payment Schedule not founded!");
+						}
 					} else {
 						result.setText("This ID is already in use!");
 					}
 				} else {
-					changeInfo(newID, oldID, newSyndicateID, oldEmployee, oldSyndicate, paymentMethod, onSyndicate, syndicateId);
+					if(Main.paymentSchedules.contains(paymentScheduleField.getText())) {
+						changeInfo(newID, oldID, oldEmployee, oldSyndicate, paymentMethod, paymentScheduleField.getText(), syndicateId);
+					} else {
+						result.setText("Payment Schedule not founded!");
+					}
 				}
 			} else {
 				result.setText("ID not founded!");
@@ -368,24 +383,35 @@ public class ChangeInfoGUI implements ActionListener {
 		}
 	}
 	
-	private void changeInfo(UUID newID, UUID oldID, UUID newSyndicateID, Employee oldEmployee, Syndicate oldSyndicate, PaymentMethod paymentMethod, boolean onSyndicate, UUID syndicateId) {
-		Main.employees.remove(oldID);
+	private void changeInfo(UUID newID, UUID oldID, Employee oldEmployee, Syndicate oldSyndicate, PaymentMethod paymentMethod, String paymentSchedule, UUID syndicateId) {
 		if(salaryTypeButtonHourly.isSelected()) {
-			Main.employees.put(newID, new Hourly(newID, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, onSyndicate, syndicateId));
+			Main.employees.remove(oldID);
+			Main.employees.put(newID, new Hourly(newID, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, paymentSchedule, syndicateId));
 		} else if(salaryTypeButtonSalaried.isSelected()) {
-			Main.employees.put(newID, new Salaried(newID, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, onSyndicate, syndicateId));
+			Main.employees.remove(oldID);
+			Main.employees.put(newID, new Salaried(newID, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, paymentSchedule, syndicateId));
 		} else if(salaryTypeButtonComissioned.isSelected()) {
-			Main.employees.put(newID, new Comissioned(newID, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, onSyndicate, syndicateId, Double.valueOf(comissionedField.getText())));
+			if(!comissionedField.getText().isEmpty()) {
+				Main.employees.remove(oldID);
+				Main.employees.put(newID, new Comissioned(newID, nameField.getText(), new Address(adressCityField.getText(), adressStateField.getText(), adressCountryField.getText()), Double.valueOf(salaryField.getText()), paymentMethod, paymentSchedule, syndicateId, Double.valueOf(comissionedField.getText())));
+			} else {
+				result.setText("The tax field cannot de blank!");
+				return;
+			}
 		} else {
 			result.setText("Error while creating new employee!");
 		}
 		if(syndicateYesButton.isSelected()) {
-			Main.syndicate.put(newSyndicateID, new Syndicate(newSyndicateID, Double.valueOf(syndicateTaxField.getText())));
+			if(syndicateTaxField.getText().equalsIgnoreCase("0")) {
+				Main.syndicate.put(syndicateId, new Syndicate(syndicateId, Double.valueOf(salaryField.getText()) * 0.1));
+			} else {
+				Main.syndicate.put(syndicateId, new Syndicate(syndicateId, Double.valueOf(syndicateTaxField.getText())));
+			}
 		}
-		if(oldEmployee.isOnSyndicate()) {
-			Main.lastAction = new Action(Main.employees.get(newID), oldEmployee, oldSyndicate, Event.CHANGE_EMPLOYEE_INFO);
+		if(!oldEmployee.getSyndicateUUID().toString().equalsIgnoreCase(Main.nullUUID)) {
+			Main.lastAction = new Action(Main.employees.get(newID), oldEmployee, oldSyndicate, null, Event.CHANGE_EMPLOYEE_INFO);
 		} else {
-			Main.lastAction = new Action(Main.employees.get(newID), oldEmployee, null, Event.CHANGE_EMPLOYEE_INFO);
+			Main.lastAction = new Action(Main.employees.get(newID), oldEmployee, null, null, Event.CHANGE_EMPLOYEE_INFO);
 		}
 		JOptionPane.showMessageDialog(null, "Employee " + oldID + " info has been saved!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 		WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);

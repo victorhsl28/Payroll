@@ -1,6 +1,7 @@
 package com.victor.classes;
 
 import java.util.Calendar;
+import java.util.Random;
 
 public class TimeCard {
 	
@@ -18,8 +19,9 @@ public class TimeCard {
 	
 	public void closeTimecard() {
 		this.exitDate = Calendar.getInstance();
-		long seconds = (exitDate.getTimeInMillis() - arriveDate.getTimeInMillis()) / 1000;
-		this.workedHours = (int) (seconds / 3600);
+		//long seconds = (exitDate.getTimeInMillis() - arriveDate.getTimeInMillis()) / 1000;
+		//this.workedHours = (int) (seconds / 3600);
+		this.workedHours = (new Random()).nextInt(10);
 		this.completed = true;
 	}
 	

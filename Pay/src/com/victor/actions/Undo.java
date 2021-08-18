@@ -1,5 +1,7 @@
 package com.victor.actions;
 
+import java.util.UUID;
+
 import javax.swing.JOptionPane;
 
 import com.victor.classes.SellResult;
@@ -19,7 +21,7 @@ public class Undo {
 			Employee employee = action.getEmployee();
 			switch (action.getEvent()) {
 			case ADD_EMPLOYEE:
-				if(employee.isOnSyndicate()) {
+				if(!employee.getSyndicateUUID().toString().equalsIgnoreCase(Main.nullUUID)) {
 					Main.syndicate.remove(employee.getSyndicateUUID());
 				}
 				Main.employees.remove(employee.getUUID());
@@ -29,19 +31,19 @@ public class Undo {
 				
 			case REMOVE_EMPLOYEE:
 				if(employee instanceof Hourly) {
-					Main.employees.put(employee.getUUID(), new Hourly(employee.getUUID(), employee.getName(), employee.getAdress(), employee.getSalary(), employee.getPaymentMethod(), employee.isOnSyndicate(), employee.getSyndicateUUID()));
+					Main.employees.put(employee.getUUID(), new Hourly(employee.getUUID(), employee.getName(), employee.getAdress(), employee.getSalary(), employee.getPaymentMethod(), employee.getPaymentSchedule(), employee.getSyndicateUUID()));
 					for(TimeCard timecard : ((Hourly) employee).getTimecards()) {
 						((Hourly)Main.employees.get(employee.getUUID())).getTimecards().add(timecard);
 					}
 				} else if(employee instanceof Salaried) {
-					Main.employees.put(employee.getUUID(), new Salaried(employee.getUUID(), employee.getName(), employee.getAdress(), employee.getSalary(), employee.getPaymentMethod(), employee.isOnSyndicate(), employee.getSyndicateUUID()));
+					Main.employees.put(employee.getUUID(), new Salaried(employee.getUUID(), employee.getName(), employee.getAdress(), employee.getSalary(), employee.getPaymentMethod(), employee.getPaymentSchedule(), employee.getSyndicateUUID()));
 				} else if(employee instanceof Comissioned) {
-					Main.employees.put(employee.getUUID(), new Comissioned(employee.getUUID(), employee.getName(), employee.getAdress(), employee.getSalary(), employee.getPaymentMethod(), employee.isOnSyndicate(), employee.getSyndicateUUID(), ((Comissioned)employee).getComissionedTax()));
+					Main.employees.put(employee.getUUID(), new Comissioned(employee.getUUID(), employee.getName(), employee.getAdress(), employee.getSalary(), employee.getPaymentMethod(), employee.getPaymentSchedule(), employee.getSyndicateUUID(), ((Comissioned)employee).getComissionedTax()));
 					for(SellResult sellResult : ((Comissioned) employee).getSellResults()) {
 						((Comissioned)Main.employees.get(employee.getUUID())).getSellResults().add(sellResult);
 					}
 				}
-				if(employee.isOnSyndicate()) {
+				if(!employee.getSyndicateUUID().toString().equalsIgnoreCase(Main.nullUUID)) {
 					Main.syndicate.put(employee.getSyndicateUUID(), new Syndicate(employee.getSyndicateUUID(), action.getSyndicate().getSyndicateTax()));
 					for(Double tax : action.getSyndicate().getExtraTaxes()) {
 						Main.syndicate.get(employee.getSyndicateUUID()).getExtraTaxes().add(tax);
@@ -55,11 +57,11 @@ public class Undo {
 				if(employee instanceof Hourly) {
 					Hourly hourly = ((Hourly)employee);
 					hourly.getTimecards().remove(hourly.getTimecards().get(hourly.getTimecards().size() - 1));
-					System.out.println("Last timecard removed!");
+					JOptionPane.showMessageDialog(null, "Last timecard removed!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 					Main.lastAction = null;
 					hourly.printTimeCards();
 				} else {
-					System.out.println("Last employee was not hourly! Could not undo the action");
+					JOptionPane.showMessageDialog(null, "Last employee was not hourly! Could not undo the action!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 					Main.lastAction = null;
 				}
 				break;
@@ -68,11 +70,11 @@ public class Undo {
 				if(employee instanceof Comissioned) {
 					Comissioned comissioned = ((Comissioned)employee);
 					comissioned.getSellResults().remove(comissioned.getSellResults().get(comissioned.getSellResults().size() - 1));
-					System.out.println("Last sell result removed!");
+					JOptionPane.showMessageDialog(null, "Last sell result removed!", "Fail!", JOptionPane.INFORMATION_MESSAGE);
 					Main.lastAction = null;
 					comissioned.printSellResults();
 				} else {
-					System.out.println("Last employee was not comissioned! Could not undo the action");
+					JOptionPane.showMessageDialog(null, "Last employee was not comissioned! Could not undo the action!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 					Main.lastAction = null;
 				}
 				break;
@@ -81,52 +83,65 @@ public class Undo {
 				if(Main.syndicate.containsValue(action.getSyndicate())) {
 					Syndicate syndicate = action.getSyndicate();
 					syndicate.getExtraTaxes().remove(syndicate.getExtraTaxes().get(syndicate.getExtraTaxes().size() - 1));
-					System.out.println("Last service tax removed!");
+					JOptionPane.showMessageDialog(null, "Last service tax removed!", "Fail!", JOptionPane.INFORMATION_MESSAGE);
 					Main.lastAction = null;
 					syndicate.print_info();
 				} else {
-					System.out.println("Last employee was not on syndicate! Could not undo the action");
+					JOptionPane.showMessageDialog(null, "Last employee was not on syndicate! Could not undo the action!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 					Main.lastAction = null;
 				}
 				break;
 			
 			case CHANGE_EMPLOYEE_INFO:
 				Employee oldEmployee = action.getOldEmployee();
-				if(employee.isOnSyndicate()) {
+				if(!employee.getSyndicateUUID().toString().equalsIgnoreCase(Main.nullUUID)) {
 					Main.syndicate.remove(employee.getSyndicateUUID());
 				}
 				Main.employees.remove(employee.getUUID());
 				if(oldEmployee instanceof Hourly) {
-					Main.employees.put(oldEmployee.getUUID(), new Hourly(oldEmployee.getUUID(), oldEmployee.getName(), oldEmployee.getAdress(), oldEmployee.getSalary(), oldEmployee.getPaymentMethod(), oldEmployee.isOnSyndicate(), oldEmployee.getSyndicateUUID()));
+					Main.employees.put(oldEmployee.getUUID(), new Hourly(oldEmployee.getUUID(), oldEmployee.getName(), oldEmployee.getAdress(), oldEmployee.getSalary(), oldEmployee.getPaymentMethod(), oldEmployee.getPaymentSchedule(), oldEmployee.getSyndicateUUID()));
 					for(TimeCard timecard : ((Hourly) oldEmployee).getTimecards()) {
 						((Hourly)Main.employees.get(employee.getUUID())).getTimecards().add(timecard);
 					}
 				} else if(oldEmployee instanceof Salaried) {
-					Main.employees.put(oldEmployee.getUUID(), new Salaried(oldEmployee.getUUID(), oldEmployee.getName(), oldEmployee.getAdress(), oldEmployee.getSalary(), oldEmployee.getPaymentMethod(), oldEmployee.isOnSyndicate(), oldEmployee.getSyndicateUUID()));
+					Main.employees.put(oldEmployee.getUUID(), new Salaried(oldEmployee.getUUID(), oldEmployee.getName(), oldEmployee.getAdress(), oldEmployee.getSalary(), oldEmployee.getPaymentMethod(), oldEmployee.getPaymentSchedule(), oldEmployee.getSyndicateUUID()));
 				} else if(oldEmployee instanceof Comissioned) {
-					Main.employees.put(oldEmployee.getUUID(), new Comissioned(oldEmployee.getUUID(), oldEmployee.getName(), oldEmployee.getAdress(), oldEmployee.getSalary(), oldEmployee.getPaymentMethod(), oldEmployee.isOnSyndicate(), oldEmployee.getSyndicateUUID(), ((Comissioned)oldEmployee).getComissionedTax()));
+					Main.employees.put(oldEmployee.getUUID(), new Comissioned(oldEmployee.getUUID(), oldEmployee.getName(), oldEmployee.getAdress(), oldEmployee.getSalary(), oldEmployee.getPaymentMethod(), oldEmployee.getPaymentSchedule(), oldEmployee.getSyndicateUUID(), ((Comissioned)oldEmployee).getComissionedTax()));
 					for(SellResult sellResult : ((Comissioned) oldEmployee).getSellResults()) {
 						((Comissioned)Main.employees.get(oldEmployee.getUUID())).getSellResults().add(sellResult);
 					}
 				}
-				if(oldEmployee.isOnSyndicate()) {
+				if(!oldEmployee.getSyndicateUUID().toString().equalsIgnoreCase(Main.nullUUID)) {
 					Main.syndicate.put(oldEmployee.getSyndicateUUID(), new Syndicate(oldEmployee.getSyndicateUUID(), action.getSyndicate().getSyndicateTax()));
 					for(Double tax : action.getSyndicate().getExtraTaxes()) {
 						Main.syndicate.get(oldEmployee.getSyndicateUUID()).getExtraTaxes().add(tax);
 					}
 				}
-				System.out.println("Employee was rolled back!");
+				JOptionPane.showMessageDialog(null, "Employee was rolled back!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 				Main.lastAction = null;
 				break;
 			
 			case ROLL:
+				for(UUID uuid : action.getStorageMap().keySet()) {
+					Employee employees = Main.employees.get(uuid);
+					if(employees instanceof Hourly) {
+						((Hourly)employees).setTimecards(action.getStorageMap().get(uuid).getListTimeCard());
+						employees.setWeeksCounter(action.getStorageMap().get(uuid).getWeeksCounter());
+					} else if(employees instanceof Comissioned) {
+						Main.employees.put(employees.getUUID(), ((Comissioned)employees));
+						((Comissioned)employees).setSellResults(action.getStorageMap().get(uuid).getListSellResult());
+						employees.setWeeksCounter(action.getStorageMap().get(uuid).getWeeksCounter());
+					}					
+				}
+				JOptionPane.showMessageDialog(null, "Payroll was rolled back!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+				Main.lastAction = null;
 				break;
 				
 			default:
 				break;
 			}
 		} else {
-			System.out.println("There is not last action!");
+			JOptionPane.showMessageDialog(null, "There is not last action!", "Fail!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 

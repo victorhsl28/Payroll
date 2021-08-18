@@ -81,7 +81,7 @@ public class SellResultGUI implements ActionListener {
 				if(Main.employees.get(id) instanceof Comissioned) {
 					Comissioned employee = (Comissioned) Main.employees.get(id);
 					employee.getSellResults().add(new SellResult(value));
-					Main.lastAction = new Action(employee, null, null, Event.CREATE_SELL_RESULT);
+					Main.lastAction = new Action(employee, null, null, null, Event.CREATE_SELL_RESULT);
 					JOptionPane.showMessageDialog(null, "Sell result for employee " + id + " has been created!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 					WindowEvent closingEvent = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
 					Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);

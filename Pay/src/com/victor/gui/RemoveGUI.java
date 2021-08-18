@@ -64,13 +64,13 @@ public class RemoveGUI implements ActionListener {
 		try {
 			UUID id = UUID.fromString(idField.getText());
 			if(Main.employees.containsKey(id)) {
-				if(Main.employees.get(id).isOnSyndicate()) {
+				if(!Main.employees.get(id).getSyndicateUUID().toString().equalsIgnoreCase(Main.nullUUID)) {
 					Main.syndicate.remove(Main.employees.get(id).getSyndicateUUID());
 				}
-				if(Main.employees.get(id).isOnSyndicate()) {
-					Main.lastAction = new Action(Main.employees.get(id), null, Main.syndicate.get(Main.employees.get(id).getSyndicateUUID()), Event.REMOVE_EMPLOYEE);
+				if(!Main.employees.get(id).getSyndicateUUID().toString().equalsIgnoreCase(Main.nullUUID)) {
+					Main.lastAction = new Action(Main.employees.get(id), null, Main.syndicate.get(Main.employees.get(id).getSyndicateUUID()), null, Event.REMOVE_EMPLOYEE);
 				} else {
-					Main.lastAction = new Action(Main.employees.get(id), null, null, Event.REMOVE_EMPLOYEE);
+					Main.lastAction = new Action(Main.employees.get(id), null, null, null, Event.REMOVE_EMPLOYEE);
 				}
 				Main.employees.remove(id);
 				JOptionPane.showMessageDialog(null, "Employee " + id + " has been removed!", "Success!", JOptionPane.INFORMATION_MESSAGE);

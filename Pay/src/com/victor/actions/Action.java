@@ -1,5 +1,8 @@
 package com.victor.actions;
 
+import java.util.Map;
+import java.util.UUID;
+
 import com.victor.classes.Syndicate;
 import com.victor.employees.Employee;
 import com.victor.main.Main;
@@ -10,11 +13,13 @@ public class Action {
 	private Employee oldEmployee;
 	private Event event;
 	private Syndicate syndicate;
+	private Map<UUID, StorageUndoData> storageMap;
 	
-	public Action (Employee employee, Employee oldEmployee, Syndicate syndicate, Event event) {
+	public Action (Employee employee, Employee oldEmployee, Syndicate syndicate, Map<UUID, StorageUndoData> storageMap, Event event) {
 		this.employee = employee;
 		this.oldEmployee = oldEmployee;
 		this.syndicate = syndicate;
+		this.storageMap = storageMap;
 		this.event = event;
 		Main.lastAction = this;
 	}
@@ -49,6 +54,14 @@ public class Action {
 
 	public void setOldEmployee(Employee oldEmployee) {
 		this.oldEmployee = oldEmployee;
+	}
+
+	public Map<UUID, StorageUndoData> getStorageMap() {
+		return storageMap;
+	}
+
+	public void setStorageMap(Map<UUID, StorageUndoData> storageMap) {
+		this.storageMap = storageMap;
 	}
 
 	public static enum Event {
